@@ -7,6 +7,13 @@ if (localStorage.getItem(key)) {
     materialStore.set(JSON.parse(localStorage.getItem(key)));
 }
 
+const remove = (id) => {
+    materialStore.update(items => {
+
+        return items.filter(i => i.id !== id);
+    });
+}
+
 const edit = (id, name, price, quantity) => {
     materialStore.update(items => {
         const index = items.findIndex((i) => i.id === id);
@@ -42,4 +49,5 @@ export default {
     subscribe: materialStore.subscribe,
     add,
     edit,
+    remove,
 }

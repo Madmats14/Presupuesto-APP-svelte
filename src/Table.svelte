@@ -23,13 +23,17 @@
         prev += next.price;
 
         return prev;
+        
     }, 0);
-
     $: totalItems = materials.reduce((prev, next) => {
         prev += next.quantity
 
         return prev;
     }, 0);
+
+    function remove(id) {
+        materialStore.remove(id);
+    }
     
 </script>
 
@@ -40,6 +44,10 @@
 
     tr {
         cursor: pointer;
+    }
+
+    tr:last-of-type {
+        cursor: inherit;
     }
 </style>
 
@@ -60,7 +68,7 @@
                 <td>{formatter.format(material.price)}</td>
                 <td>{material.quantity}</td>
                 <td>
-                    <i class="far fa-trash-alt"></i></td>
+                    <i on:click|stopPropagation={remove(material.id)} class="far fa-trash-alt"></i></td>
                 <td>{percentage(material.price, material.quantity, total).toFixed(1)}</td>
             </tr>    
         {/each}
