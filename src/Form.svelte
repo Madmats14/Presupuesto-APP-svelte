@@ -3,7 +3,7 @@
     export let name = "";
     export let price;
     export let quantity;
-    import storage from "./storage.js";
+    import materialStorage from "./storage.js";
 
     $: mode = id ? "modificar" : "agregar";
     $: canSubmit = price >= 0 && name !== "" && quantity >= 1;
@@ -11,16 +11,17 @@
     function submit() {
         if (!canSubmit) {
             return;
+        }    
+
+        if (mode === "agregar") {
+            materialStorage.add(name, price, quantity);
         }
+
         price = '';
         name = '';
         id = undefined;
         quantity = '';
-    }
-
-    if (mode === "agregar") {
-        materialStorage.add(name, price, quantity);
-    }
+    }    
 
     function cancel() {
         price = '';
