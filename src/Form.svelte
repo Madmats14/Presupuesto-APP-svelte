@@ -17,6 +17,10 @@
             materialStorage.add(name, price, quantity);
         }
 
+        if (mode === 'modificar') {
+            materialStorage.edit(id, name, price, quantity);
+        }
+
         price = '';
         name = '';
         id = undefined;

@@ -1,22 +1,33 @@
 <script>
-import { prevent_default } from "svelte/internal";
-
+    import { createEventDispatcher } from "svelte";
     import materialStore from "./storage.js";
 
+    const dispatch = createEventDispatcher();
     let materials = [];
     
     materialStore.subscribe(items => {
         materials = items;
     });
 
-    function percentage(precio, total) {
-        return (precio / total) * 100;
+    function edit(id, name, price, quantity) {
+        dispatch ("edit", {id, name, price, quantity});
+    }
+
+    function percentage(precio, cantidad, total) {
+        return ((precio * cantidad)/ total) * 100;
     }
 
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'});
 
     $: total = materials.reduce((prev, next) => {
         prev += next.price;
+
+        return prev;
+    }, 0);
+
+    $: totalItems = materials.reduce((prev, next) => {
+        prev += next.quantity
+
         return prev;
     }, 0);
     
@@ -25,6 +36,10 @@ import { prevent_default } from "svelte/internal";
 <style>
     table {
         width: 100%;
+    }
+
+    tr {
+        cursor: pointer;
     }
 </style>
 
@@ -40,18 +55,19 @@ import { prevent_default } from "svelte/internal";
     </thead>
     <tbody>
         {#each materials as material (material.id)}
-            <tr>
+            <tr on:click={edit(material.id, material.name, material.price, material.quantity)}>
                 <td>{material.name}</td>
                 <td>{formatter.format(material.price)}</td>
                 <td>{material.quantity}</td>
                 <td>
                     <i class="far fa-trash-alt"></i></td>
-                <td>{percentage(material.price,total).toFixed(1)}</td>
+                <td>{percentage(material.price, material.quantity, total).toFixed(1)}</td>
             </tr>    
         {/each}
         <tr>
             <td>Total</td>
-            <td colspan="3">{formatter.format(total)}</td>
+            <td>{formatter.format(total)}</td>
+            <td colspan="2">{totalItems}</td>
         </tr>
 
     <tbody/>
